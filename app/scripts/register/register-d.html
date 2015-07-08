@@ -1,0 +1,9 @@
+<div class="register">
+    <h2>Register your account</h2>
+    <form ng-submit="register.createUser(newUser.email, newUser.pass)">
+        <input type="email" ng-model="newUser.email"/>
+        <input type="password" ng-model="newUser.pass"/>
+        <button type="submit">Register new account</button>
+    </form>
+    <button ng-click="register.logout()">Log Out</button>
+</div>

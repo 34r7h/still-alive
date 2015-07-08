@@ -1,0 +1,12 @@
+<div class="admin">
+    <h2>Administrate the site</h2>
+    <button ng-click="admin.Api.createUser()">Create User</button>
+    <button ng-click="admin.Api.removeUser()">Remove User</button>
+    <button ng-click="admin.Api.subscribe()">Subscribe to User</button>
+    <button ng-click="admin.Api.unsubscribe()">Unsubscribe from User</button>
+    <button ng-click="admin.Api.update()">Update</button>
+    <button ng-click="admin.Api.login()">Login User</button>
+    <button ng-click="admin.Api.logout()">logout User</button>
+    <div>Database Object: {{admin.Data.fbObject}}</div>
+    <div>Database Array: {{admin.Data.fbArray}}</div>
+</div>
