@@ -1,9 +1,16 @@
 <div class="register">
     <h2>Register your account</h2>
-    <form ng-submit="register.createUser(newUser.email, newUser.pass)">
+    <form ng-submit="register.createUser(newUser.email, newUser.name, newUser.pass)">
         <input type="email" ng-model="newUser.email"/>
+        <input type="text" ng-model="newUser.name"/>
         <input type="password" ng-model="newUser.pass"/>
         <button type="submit">Register new account</button>
     </form>
+    <form ng-submit="register.removeUser(newUser.email, newUser.pass)">
+        <input type="email" ng-model="removeUser.email"/>
+        <input type="password" ng-model="removeUser.pass"/>
+        <button type="submit">Remove account</button>
+    </form>
     <button ng-click="register.logout()">Log Out</button>
+
 </div>

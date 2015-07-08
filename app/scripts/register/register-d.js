@@ -25,6 +25,7 @@ angular.module('stillalive')
         {
             this.createUser = Api.createUser;
             this.logout = Api.logout;
+            this.removeUser = Api.removeUser;
         }
     };
 });

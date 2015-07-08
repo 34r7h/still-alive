@@ -6,19 +6,23 @@
  * Service in the stillalive.
  */
 angular.module('stillalive')
-	.service('Api', function ($firebaseAuth, $firebaseArray) {
+	.service('Api', function ($firebaseAuth, $firebaseArray, $firebaseObject) {
 		'use strict';
-		var ref = new Firebase('https://still-alive.firebaseio.com/test').child('users');
-		function createUser(email, pass) {
+
+		function createUser(email, name, pass) {
+			var ref = new Firebase('https://still-alive.firebaseio.com').child('users');
 			var authObj = $firebaseAuth(ref);
+			var userArray = $firebaseArray(ref);
+			var userObject = $firebaseObject(ref);
 			authObj.$createUser({
 				email: email,
 				password: pass
 			}).then(function(userData) {
-				console.log("User " + userData.uid + " created successfully!");
-				var userArray = $firebaseArray(ref);
-				userArray.$add(userData.uid);
-
+				userObject[userData.uid] = {
+					email:email,
+					name:name
+				};
+				userObject.$save();
 				return authObj.$authWithPassword({
 					email: email,
 					password: pass
@@ -30,8 +34,23 @@ angular.module('stillalive')
 			});
 		}
 
-		function removeUser() {
+		function removeUser(email,pass) {
 			console.log('remove user');
+			var ref = new Firebase('https://still-alive.firebaseio.com/');
+			var authObj = $firebaseAuth(ref);
+			var userId = authObj.$getAuth().uid;
+			authObj.$removeUser({
+				email: email,
+				password: pass
+			}).then(function() {
+				var removeRef = new Firebase('https://still-alive.firebaseio.com/users/'+userId);
+				var removeObject = $firebaseObject(removeRef);
+				console.log('removeObject',removeObject);
+				removeObject.$remove();
+				console.log("User removed successfully!");
+			}).catch(function(error) {
+				console.error("Error: ", error);
+			});
 		}
 
 		function subscribe() {
@@ -52,6 +71,7 @@ angular.module('stillalive')
 
 		function logout() {
 			console.log('logout user');
+			var ref = new Firebase('https://still-alive.firebaseio.com/').child('users');
 			var authObj = $firebaseAuth(ref);
 			authObj.$unauth();
 			console.log('user unauthdd',authObj);
