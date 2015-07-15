@@ -1,3 +1,9 @@
 <div class="login">
     <h2>Login to your account</h2>
+
+    <input type="text" ng-model="login.email"/>
+    <input type="password" ng-model="login.pass"/>
+    <button ng-click="login.login(login.email, login.pass)">Login</button>
+    <button ng-click="resetPassword(login.email)">Send Password Reset</button>
+    <button ng-click="login.logout()">Log Out</button>
 </div>

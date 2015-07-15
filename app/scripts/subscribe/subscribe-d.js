@@ -20,9 +20,10 @@ angular.module('stillalive')
         {
 
         },
-        controller: function ($scope)
+        controllerAs: 'subscribe',
+        controller: function ($scope, Api)
         {
-
+            this.subscribe = Api.subscribe;
         }
     };
 });

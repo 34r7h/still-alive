@@ -6,9 +6,17 @@
  * Service in the stillalive.
  */
 angular.module('stillalive')
-	.service('Api', function ($firebaseAuth, $firebaseArray, $firebaseObject) {
+	.service('Api', function ($firebaseAuth, $firebaseArray, $firebaseObject, $rootScope) {
 		'use strict';
 
+		// Init
+		var ref = new Firebase('https://still-alive.firebaseio.com');
+		var authObj = $firebaseAuth(ref);
+		$rootScope.user = authObj.$getAuth();
+		console.log('$rootScope.user',$rootScope.user);
+
+
+		// API
 		function createUser(email, name, pass) {
 			var ref = new Firebase('https://still-alive.firebaseio.com').child('users');
 			var authObj = $firebaseAuth(ref);
@@ -29,6 +37,18 @@ angular.module('stillalive')
 				});
 			}).then(function(authData) {
 				console.log("Logged in as:", authData.uid);
+			}).catch(function(error) {
+				console.error("Error: ", error);
+			});
+		}
+
+		function resetPassword(email){
+			var ref = new Firebase('https://still-alive.firebaseio.com/');
+			var authObj = $firebaseAuth(ref);
+			authObj.$resetPassword({
+				email: email
+			}).then(function() {
+				console.log("Password reset email sent successfully!");
 			}).catch(function(error) {
 				console.error("Error: ", error);
 			});
@@ -55,6 +75,7 @@ angular.module('stillalive')
 
 		function subscribe() {
 			console.log('subscribe');
+
 		}
 
 		function unsubscribe() {
@@ -65,16 +86,30 @@ angular.module('stillalive')
 			console.log('update');
 		}
 
-		function login() {
+		function login(email,pass) {
+			$rootScope.user;
 			console.log('login user');
+			var ref = new Firebase("https://still-alive.firebaseio.com");
+			var authObj = $firebaseAuth(ref);
+			authObj.$authWithPassword({
+				email: email,
+				password: pass
+			}).then(function(authData) {
+				console.log("Logged in as:", authData.uid);
+				$rootScope.user = authData.uid;
+
+			}).catch(function(error) {
+				console.error("Authentication failed:", error);
+			});
 		}
 
 		function logout() {
 			console.log('logout user');
-			var ref = new Firebase('https://still-alive.firebaseio.com/').child('users');
+			var ref = new Firebase('https://still-alive.firebaseio.com/');
 			var authObj = $firebaseAuth(ref);
 			authObj.$unauth();
-			console.log('user unauthdd',authObj);
+			console.log('user unauth', authObj.$getAuth());
+			$rootScope.user = undefined;
 		}
 
 		return {
@@ -84,7 +119,8 @@ angular.module('stillalive')
 			unsubscribe: unsubscribe,
 			update: update,
 			login: login,
-			logout: logout
+			logout: logout,
+			resetPassword: resetPassword
 		};
 
 		// AngularJS will instantiate a singleton by calling "new" on this function

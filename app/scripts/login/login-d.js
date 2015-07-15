@@ -20,8 +20,12 @@ angular.module('stillalive')
         {
 
         },
-        controller: function ($scope)
+        controllerAs: 'login',
+        controller: function ($scope, Api)
         {
+            this.login = Api.login;
+            this.resetPassword = Api.resetPassword;
+            this.logout = Api.logout;
 
         }
     };

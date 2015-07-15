@@ -24,7 +24,6 @@ angular.module('stillalive')
         controller: function ($scope, Api)
         {
             this.createUser = Api.createUser;
-            this.logout = Api.logout;
             this.removeUser = Api.removeUser;
         }
     };
