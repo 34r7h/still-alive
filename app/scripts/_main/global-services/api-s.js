@@ -19,18 +19,23 @@ angular.module('stillalive')
 		// API
 		function createUser(email, name, pass) {
 			var ref = new Firebase('https://still-alive.firebaseio.com').child('users');
+			var indexRef = new Firebase('https://still-alive.firebaseio.com').child('index');
 			var authObj = $firebaseAuth(ref);
-			var userArray = $firebaseArray(ref);
 			var userObject = $firebaseObject(ref);
+			var indexObject = $firebaseObject(indexRef);
 			authObj.$createUser({
 				email: email,
 				password: pass
 			}).then(function(userData) {
 				userObject[userData.uid] = {
 					email:email,
-					name:name
+					name:name,
+					subscribeTo:[email],
+					subscribeFrom:[email]
 				};
 				userObject.$save();
+				indexObject.$save();
+
 				return authObj.$authWithPassword({
 					email: email,
 					password: pass
@@ -40,6 +45,7 @@ angular.module('stillalive')
 			}).catch(function(error) {
 				console.error("Error: ", error);
 			});
+
 		}
 
 		function resetPassword(email){
@@ -54,7 +60,7 @@ angular.module('stillalive')
 			});
 		}
 
-		function removeUser(email,pass) {
+		function removeUser(email, pass) {
 			console.log('remove user');
 			var ref = new Firebase('https://still-alive.firebaseio.com/');
 			var authObj = $firebaseAuth(ref);
@@ -73,8 +79,17 @@ angular.module('stillalive')
 			});
 		}
 
-		function subscribe() {
-			console.log('subscribe');
+		function subscribe(email) {
+			var ref = new Firebase('https://still-alive.firebaseio.com/');
+			var indexRef = new Firebase('https://still-alive.firebaseio.com/index/');
+			var refObject = $firebaseObject(ref);
+			var indexRefObject = $firebaseObject(indexRef).$loaded(function(data){
+				var subscribeTo = indexRefObject[email];
+				var subscribeFrom = indexRefObject[$rootScope.user];
+				var userRef = new Firebase('https://still-alive.firebaseio.com/users/'+subscribeFrom);
+				console.log('subscribe to ', email, subscribeFrom, data);
+			});
+
 
 		}
 
