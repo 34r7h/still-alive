@@ -9,7 +9,7 @@ angular.module('stillalive')
     .service('Data', function ($firebaseObject, $firebaseArray)
     {
         'use strict';
-        var ref = new Firebase('https://still-alive.firebaseio.com/test');
+        var ref = new Firebase('https://still-alive.firebaseio.com');
         var fbObject = $firebaseObject(ref);
         var fbArray = $firebaseArray(ref);
         return {

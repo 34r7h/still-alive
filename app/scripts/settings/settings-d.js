@@ -20,9 +20,12 @@ angular.module('stillalive')
         {
 
         },
-        controller: function ($scope)
+        controller: function ($scope, Data, Api, $rootScope)
         {
-
-        }
+            Api.setSettings($rootScope.user.uid, {settings:'settings'});
+            this.settings = Data.fbObject;
+            console.log = this.settings.users;
+        },
+	      controllerAs: 'settings'
     };
 });

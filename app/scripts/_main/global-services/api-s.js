@@ -6,7 +6,7 @@
  * Service in the stillalive.
  */
 angular.module('stillalive')
-	.service('Api', function ($firebaseAuth, $firebaseArray, $firebaseObject, $rootScope) {
+	.service('Api', function ($firebaseAuth, $firebaseArray, $firebaseObject, $rootScope, $log) {
 		'use strict';
 
 		// Init
@@ -28,10 +28,13 @@ angular.module('stillalive')
 				password: pass
 			}).then(function(userData) {
 				userObject[userData.uid] = {
-					email:email,
-					name:name,
 					subscribeTo:[email],
-					subscribeFrom:[email]
+					subscribeFrom:[email],
+					settings:{
+
+					},
+					email:email,
+					name:name
 				};
 				userObject.$save();
 				indexObject.$save();
@@ -127,6 +130,39 @@ angular.module('stillalive')
 			$rootScope.user = undefined;
 		}
 
+		function getSettings(user){
+			var ref = new Firebase('https://still-alive.firebaseio.com/users/').child(user);
+			var indexRef = new Firebase('https://still-alive.firebaseio.com').child('index');
+			var userObject = $firebaseObject(ref);
+			var indexObject = $firebaseObject(indexRef);
+			userObject.$loaded(
+				function(data) {
+					$log.log(data.subscribeTo); // true
+				},
+				function(error) {
+					$log.error("Error:", error);
+				}
+			);
+		}
+
+		function setSettings(user, settings){
+			// user: whose settings we want
+			// settings: settings config object
+			var ref = new Firebase('https://still-alive.firebaseio.com/users/').child(user);
+			var indexRef = new Firebase('https://still-alive.firebaseio.com').child('index');
+			var userObject = $firebaseObject(ref);
+			var indexObject = $firebaseObject(indexRef);
+			userObject.$loaded(
+				function(data) {
+					$log.log(data.subscribeTo, settings); // true
+				},
+				function(error) {
+					$log.error("Error:", error);
+				}
+			);
+
+		}
+
 		return {
 			createUser: createUser,
 			removeUser: removeUser,
@@ -135,7 +171,9 @@ angular.module('stillalive')
 			update: update,
 			login: login,
 			logout: logout,
-			resetPassword: resetPassword
+			resetPassword: resetPassword,
+			getSettings: getSettings,
+			setSettings: setSettings
 		};
 
 		// AngularJS will instantiate a singleton by calling "new" on this function

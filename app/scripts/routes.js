@@ -27,7 +27,7 @@ angular.module('stillalive')
         $stateProvider
           .state( 'home', {
               url: '/home',
-              template: '<h2>Welcome to a new way to make sure people are alive.</h2>'
+              template: '<h2>Welcome to another new way to make sure people are alive.</h2>'
           }
 
         )
