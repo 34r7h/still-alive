@@ -22,7 +22,7 @@ angular.module('stillalive')
         },
         controller: function ($scope, Data, Api, $rootScope)
         {
-            Api.setSettings($rootScope.user.uid, {settings:'settings'});
+            this.getSubscribers = Api.getSettings($rootScope.user.uid);
             this.settings = Data.fbObject;
             console.log = this.settings.users;
         },

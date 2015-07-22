@@ -45,9 +45,10 @@
     </label>
     <div>
     	<h3>Subscriptions</h3>
+		<button ng-click="settings.getSubscribers">Show Subscribers</button>
 	<ul>
-		<li>
-			Subscribed to yourself.
+		<li ng-repeat="user in settings.subscribedTo">
+			{{user}}
 		</li>
 	</ul>
     </div>
