@@ -15,11 +15,16 @@ angular.module('stillalive')
 		$rootScope.user = authObj.$getAuth();
 		console.log('$rootScope.user',$rootScope.user);
 
+		// Util
+		function keyString (futureKey){
+			return futureKey.toLowerCase().replace(/'+/g, '').replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "-").replace(/^-+|-+$/g, '');
+		}
+
 
 		// API
 		function createUser(email, name, pass) {
 			var ref = new Firebase('https://still-alive.firebaseio.com').child('users');
-			var indexRef = new Firebase('https://still-alive.firebaseio.com').child('index');
+			var indexRef = new Firebase('https://still-alive.firebaseio.com/index').child('users');
 			var authObj = $firebaseAuth(ref);
 			var userObject = $firebaseObject(ref);
 			var indexObject = $firebaseObject(indexRef);
@@ -36,8 +41,15 @@ angular.module('stillalive')
 					email:email,
 					name:name
 				};
-				userObject.$save();
-				indexObject.$save();
+				userObject.$save().then(function(){
+					email= keyString(email);
+					name= keyString(name);
+					if( !indexObject['email'] ) indexObject['email'] = {};
+					if( !indexObject['name'] ) indexObject['name'] = {};
+					indexObject['email'][email]=userData.uid;
+					indexObject['name'][name]=userData.uid;
+					indexObject.$save();
+				});
 
 				return authObj.$authWithPassword({
 					email: email,
@@ -64,22 +76,38 @@ angular.module('stillalive')
 		}
 
 		function removeUser(email, pass) {
-			console.log('remove user');
+			console.log('remove user', email);
 			var ref = new Firebase('https://still-alive.firebaseio.com/');
+			var dbObject = $firebaseObject(ref).$loaded().then(function(data){
+				console.log('dbObject',data.index.users.email);
+				var keyEmail = keyString(email);
+				var userId = data.index.users.email[keyEmail];
+				console.log('userId',userId);
+				var userObject = data.users[userId];
+				console.log('userObject',userObject);
+
+				var removeRef = new Firebase('https://still-alive.firebaseio.com/users/'+userId);
+				var removeIndexRef = new Firebase('https://still-alive.firebaseio.com/users/email/'+keyString(email));
+				var removeObject = $firebaseObject(removeRef);
+				removeObject.$remove();
+				var removeIndex = $firebaseObject(removeIndexRef).$loaded().then(function(index){
+					console.log('removeIndex', index);
+				});
+				index.$remove();
+				console.log("User removed successfully!");
+			});
+
+
+
+
 			var authObj = $firebaseAuth(ref);
-			var userId = authObj.$getAuth().uid;
+
 			authObj.$removeUser({
 				email: email,
 				password: pass
-			}).then(function() {
-				var removeRef = new Firebase('https://still-alive.firebaseio.com/users/'+userId);
-				var removeObject = $firebaseObject(removeRef);
-				console.log('removeObject',removeObject);
-				removeObject.$remove();
-				console.log("User removed successfully!");
-			}).catch(function(error) {
-				console.error("Error: ", error);
 			});
+
+
 		}
 
 		function subscribe(email) {

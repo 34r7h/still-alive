@@ -29,20 +29,20 @@ IMPORTANT NOTE:
 
 @import  'functions/_some-function.scss';
 
+@import  'mixins/_some-mixin.scss';
+
 @import  'placeholders/_some-placeholder.scss';
 
-@import  'mixins/_some-mixin.scss';
+@import  '../scripts/admin/_admin-d.scss';
 
 @import  '../scripts/login/_login-d.scss';
 
 @import  '../scripts/register/_register-d.scss';
 
-@import  '../scripts/admin/_admin-d.scss';
-
-@import  '../scripts/subscribers/_subscribers-d.scss';
-
 @import  '../scripts/settings/_settings-d.scss';
 
 @import  '../scripts/subscribe/_subscribe-d.scss';
+
+@import  '../scripts/subscribers/_subscribers-d.scss';
 
 // endinject
